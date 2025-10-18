@@ -1,0 +1,152 @@
+/* Small preview helpers (from original head) */
+body { margin: 0; padding: 20px; font-family: system-ui, sans-serif; line-height: 1.5; color: #333; }
+img { max-width: 100%; height: auto; }
+a { color: #0066cc; }
+h1, h2, h3, h4, h5, h6 { margin-top: 0; }
+p { margin: 0 0 1em; }
+
+/* --- App styles (merged from original) --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background: #e6f0ff;
+  color: #003366;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#app {
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.screen {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+  justify-content: space-between;
+}
+.screen.active { display: flex; }
+
+/* Logo and headings moved from inline styles */
+.logo-img { max-width: 20%; height: auto; display: block; margin: 0 auto; }
+.welcome-title { text-align: center; }
+.centered { text-align: center; }
+
+/* --- Carousel --- */
+.carousel-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  margin: 40px 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+}
+.carousel-slide {
+  min-width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  background: #cce0ff;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  text-align: center;
+  flex-direction: column;
+}
+.carousel-slide img {
+  max-width: 50%;
+  max-height: 50px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+.dot.active { background-color: #003366; }
+
+/* --- Inputs & Buttons --- */
+input[type="tel"], .code-input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #003366;
+  font-size: 1rem;
+}
+#phoneInput { text-align: center; }
+.code-inputs {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.code-input {
+  width: 20%;
+  text-align: center;
+  font-size: 1.5rem;
+  border: 2px solid #003366;
+}
+button {
+  padding: 15px;
+  background: #003366;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.back-btn {
+  background: none;
+  color: #003366;
+  border: none;
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* --- Fade-in digits animation --- */
+.digit.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* --- Responsive adjustments --- */
+@media (max-width: 500px) {
+  .carousel-slide {
+    font-size: 1rem;
+    padding: 15px;
+  }
+  .carousel-slide img {
+    max-height: 180px;
+  }
+}
