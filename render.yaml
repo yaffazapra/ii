@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: whatsapp-bridge
+    runtime: docker
+    dockerfilePath: ./whatsapp-mcp/whatsapp-bridge/Dockerfile
+    dockerContext: ./whatsapp-mcp/whatsapp-bridge
+    plan: free
+    env: docker
+    disk:
+      name: whatsapp-data
+      mountPath: /app/store
+      sizeGB: 1
+    envVars:
+      - key: PORT
+        value: 8080

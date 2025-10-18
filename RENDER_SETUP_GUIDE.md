@@ -40,16 +40,18 @@ git push origin main
 
 3. **Select:** Your GitHub repo (`yaffazapra/ii`)
 
-4. **Render will:**
-   - Detect `render.yaml`
+4. **Important:** Make sure `render.yaml` is in the repository root (not in subdirectory)
+
+5. **Render will:**
+   - Detect `render.yaml` in root
    - Show: "whatsapp-bridge" service
    - Auto-configure everything
 
-5. **Click:** "Apply"
+6. **Click:** "Apply"
 
-6. **Wait:** 5-10 minutes for first build
+7. **Wait:** 5-10 minutes for first build
 
-7. **Done!** You'll get a URL like:
+8. **Done!** You'll get a URL like:
    ```
    https://whatsapp-bridge-xxxx.onrender.com
    ```
