@@ -1,3 +1,4 @@
+name: whatsapp-verification-system
 services:
   - type: web
     name: whatsapp-bridge
