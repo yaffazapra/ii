@@ -4,12 +4,8 @@
 
   // API Configuration
   window.APP_CONFIG = {
-    // WhatsApp API endpoint - Update this URL after deploying to Render
-    // Current: Temporary Cloudflare tunnel (will expire)
-    WHATSAPP_API_URL: 'https://muze-toolbox-heel-builds.trycloudflare.com/api/send',
-
-    // After Render deployment, update to:
-    // WHATSAPP_API_URL: 'https://whatsapp-bridge-xxxx.onrender.com/api/send',
+    // WhatsApp API endpoint - Render deployment (permanent)
+    WHATSAPP_API_URL: 'https://whatsapp-bridge-o5uu.onrender.com/api/send',
 
     // Alternative: Use relative URL if API is on same domain
     // WHATSAPP_API_URL: '/api/send',
