@@ -127,15 +127,25 @@ Should return:
 
 ## ⚠️ Free Tier Limitations
 
-**Service sleeps after 15 min of inactivity:**
+### 1. Service sleeps after 15 min of inactivity
 - First request takes ~30s (cold start)
 - Subsequent requests are instant
 - Good for testing/low-traffic
 
 **Solutions:**
-1. **Upgrade to $7/month** - No sleep, always fast
-2. **Use UptimeRobot** - Pings every 5 min (keeps awake)
-3. **Accept it** - Good enough for demos
+- **Upgrade to $7/month** - No sleep, always fast
+- **Use UptimeRobot** - Pings every 5 min (keeps awake)
+- **Accept it** - Good enough for demos
+
+### 2. No persistent storage (FREE TIER)
+- ⚠️ **WhatsApp session resets on each deploy**
+- ⚠️ **Need to re-scan QR code after every deploy**
+- ⚠️ **Message history not saved between deploys**
+
+**Solutions:**
+- **Upgrade to Starter ($7/month)** - Get 1GB persistent disk
+- **Accept it** - Re-scan QR after deploys (takes 1 minute)
+- **Use paid plan** - WhatsApp stays connected across deploys
 
 ---
 

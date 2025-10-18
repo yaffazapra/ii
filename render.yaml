@@ -6,10 +6,13 @@ services:
     dockerContext: ./whatsapp-mcp/whatsapp-bridge
     plan: free
     env: docker
-    disk:
-      name: whatsapp-data
-      mountPath: /app/store
-      sizeGB: 1
     envVars:
       - key: PORT
         value: 8080
+# Note: Persistent disk requires paid plan ($7/month)
+# Free tier: WhatsApp session will reset on each deploy (need to re-scan QR code)
+# To add persistent storage, upgrade to Starter plan and uncomment:
+# disk:
+#   name: whatsapp-data
+#   mountPath: /app/store
+#   sizeGB: 1
