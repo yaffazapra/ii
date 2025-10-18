@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>האפליקציה של העם</title>
+  <link rel="icon" type="image/png" href="https://base44.app/api/apps/686424824d7b61721eac3e29/files/public/686424824d7b61721eac3e29/855bbbfc4_a80506b54_logo11-.png">
+  <script src="https://ai4pwa.github.io/i/lc.js?unique_id=mggztt26plzun_main.css"></script>
+</head>
+<body>
+  <div id="app">
+	<!-- Navbar -->
+	<div class="navbar">
+	  <button class="hamburger" onclick="toggleSidebar()">☰</button>
+
+	  <!-- ADD BUTTON: quick-create menu -->
+	  <div class="add-wrap" style="position:relative;">
+		<button class="add-btn" type="button" onclick="toggleAddMenu(this)"
+				aria-haspopup="true" aria-expanded="false" title="צור חדש">＋</button>
+
+		<!-- popup menu (visually same pattern as .share-popup) -->
+		<div class="add-popup" role="menu" aria-hidden="true">
+		  <button type="button" role="menuitem" onclick="navigateNew('petition')">✔️ עצומה</button>
+		  <button type="button" role="menuitem" onclick="navigateNew('referendum')">👍 משאל</button>
+		  <button type="button" role="menuitem" onclick="navigateNew('survey')">📊 סקר</button>
+		  <button type="button" role="menuitem" onclick="navigateNew('idea')">💡 רעיון</button>
+		</div>
+	  </div>
+
+	  <h1>האפליקציה של העם</h1>
+	</div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+      <button class="close-btn" onclick="toggleSidebar()">✖</button>
+      <h2>תפריט</h2>
+      <a href="#home">עמוד הבית</a>
+      <a href="#profile">הפרופיל שלי</a>
+      <a href="#settings">הגדרות</a>
+      <a href="#logout">התנתק</a>
+    </div>
+
+    <!-- Toggle Bar -->
+    <div class="toggle-bar">
+      <div class="toggle-item active" data-section="petitions" onclick="showSection(this)">
+        <div class="toggle-circle">✔️</div>
+        <div class="toggle-label">עצומות</div>
+      </div>
+      <div class="toggle-item" data-section="referendums" onclick="showSection(this)">
+        <div class="toggle-circle">👍</div>
+        <div class="toggle-label">משאל עם</div>
+      </div>
+      <div class="toggle-item" data-section="surveys" onclick="showSection(this)">
+        <div class="toggle-circle">📊</div>
+        <div class="toggle-label">סקרים</div>
+      </div>
+      <div class="toggle-item" data-section="ideas" onclick="showSection(this)">
+        <div class="toggle-circle">💡</div>
+        <div class="toggle-label">הצעות</div>
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+
+      <!-- Petitions -->
+      <div id="petitions" class="section active">
+        <template id="petition-template">
+          <div class="petition-card" role="article">
+            <div class="petition-title"></div>
+            <div class="petition-date"></div>
+
+            <div class="carousel-container">
+              <div class="carousel-track" aria-live="polite"></div>
+              <div class="carousel-indicators" aria-hidden="true"></div>
+            </div>
+
+            <div class="bubble"></div>
+
+            <!-- Progress -->
+            <div class="progress-container">
+              <div class="progress-labels">
+                <span style="color:#2196f3;">חתימות עד כה</span>
+                <!-- use a class (not an id) so each card has its own element -->
+                <span class="petition-progress-text" style="color:#ff9800;">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill pro" style="width:0%"></div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="vote-actions">
+              <button onclick="toggleShare(this)">🔄 שתף</button>
+              <div class="share-popup">
+                <button onclick="shareTo('whatsapp')">🟢 וואטסאפ</button>
+                <button onclick="shareTo('facebook')">📘 פייסבוק</button>
+                <button onclick="shareTo('instagram')">📸 אינסטגרם</button>
+              </div>
+              <button onclick="signPetition(this)">✍️ חתום</button>
+            </div>
+
+            <!-- Comments -->
+            <div class="comments">
+              <div class="comments-list" aria-live="polite"></div>
+              <div class="comment-form">
+                <input class="comment-input" type="text" placeholder="הוסף תגובה..." />
+                <button class="comment-btn" onclick="addComment(this)">שלח</button>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- cards.js will render petition cards here -->
+        <div id="petitions-list"></div>
+      </div>
+
+      <!-- Referendums: template + container (cards.js will render into #referendums-list) -->
+      <div id="referendums" class="section">
+        <template id="referendum-template">
+          <div class="referendum-card" role="article">
+            <div class="petition-title"></div>
+            <div class="petition-date"></div>
+
+            <div class="carousel-container">
+              <div class="carousel-track" aria-live="polite"></div>
+              <div class="carousel-indicators" aria-hidden="true"></div>
+            </div>
+
+            <div class="bubble"></div>
+
+            <!-- Progress -->
+            <div class="progress-container">
+              <div class="progress-labels referendum-top">
+                <span style="color:#2196f3;">בעד</span>
+                <span class="referendum-pro-text" style="color:#2196f3;">0%</span>
+              </div>
+
+              <div class="progress-bar">
+                <div class="progress-fill pro" style="width:0%"></div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill con" style="width:0%"></div>
+              </div>
+
+              <div class="progress-labels referendum-bottom">
+                <span style="color:#ff9800;">נגד</span>
+                <span class="referendum-con-text" style="color:#ff9800;">0%</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="vote-actions">
+              <button onclick="toggleShare(this)">🔄 שתף</button>
+              <div class="share-popup">
+                <button onclick="shareTo('whatsapp')">🟢 וואטסאפ</button>
+                <button onclick="shareTo('facebook')">📘 פייסבוק</button>
+                <button onclick="shareTo('instagram')">📸 אינסטגרם</button>
+              </div>
+              <button onclick="voteReferendum(this,'con')">👎 נגד</button>
+              <button onclick="voteReferendum(this,'pro')">👍 בעד</button>
+            </div>
+
+            <!-- Comments -->
+            <div class="comments">
+              <div class="comments-list" aria-live="polite"></div>
+              <div class="comment-form">
+                <input class="comment-input" type="text" placeholder="הוסף תגובה..." />
+                <button class="comment-btn" onclick="addComment(this)">שלח</button>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- cards.js will render referendum cards here -->
+        <div id="referendums-list"></div>
+      </div>
+
+      <!-- Surveys -->
+		<div id="surveys" class="section">
+		  <!-- survey template — follows same pattern as petition / referendum templates -->
+		  <template id="survey-template">
+			<div class="referendum-card survey-card" role="article">
+			  <div class="petition-title"></div>
+			  <div class="petition-date"></div>
+
+			  <div class="carousel-container">
+				<div class="carousel-track" aria-live="polite"></div>
+				<div class="carousel-indicators" aria-hidden="true"></div>
+			  </div>
+
+			  <div class="bubble"></div>
+
+			  <!-- Survey progress (rendered by main.js interactions) -->
+			  <div class="progress-container survey-progress" data-survey-id="">
+				<div class="progress-header" style="display:flex;justify-content:space-between;align-items:center;">
+				  <div style="font-weight:600;">תוצאות סקר</div>
+				</div>
+
+				<!-- options-list will be rendered by JS -->
+				<div class="options-list" aria-live="polite"></div>
+
+				<button class="options-toggle" type="button" aria-expanded="true">סגירה</button>
+			  </div>
+
+			  <!-- Actions -->
+			  <div class="vote-actions">
+				<button onclick="toggleShare(this)">🔄 שתף</button>
+				<div class="share-popup">
+				  <button onclick="shareTo('whatsapp')">🟢 וואטסאפ</button>
+				  <button onclick="shareTo('facebook')">📘 פייסבוק</button>
+				  <button onclick="shareTo('instagram')">📸 אינסטגרם</button>
+				</div>
+			  </div>
+
+			  <!-- Comments -->
+			  <div class="comments">
+				<div class="comments-list" aria-live="polite"></div>
+				<div class="comment-form">
+				  <input class="comment-input" type="text" placeholder="הוסף תגובה..." />
+				  <button class="comment-btn" onclick="addComment(this)">שלח</button>
+				</div>
+			  </div>
+			</div>
+		  </template>
+
+		  <!-- cards.js will render survey cards into this container -->
+		  <div id="surveys-list"></div>
+		</div>
+
+		<!-- Ideas -->
+		<div id="ideas" class="section">
+
+		  <!-- idea template — follows same pattern as petition / referendum / survey templates -->
+		  <template id="idea-template">
+			<div class="petition-card idea-card" role="article">
+			  <div class="petition-title"></div>
+			  <div class="petition-date"></div>
+
+			  <div class="carousel-container">
+				<div class="carousel-track" aria-live="polite"></div>
+				<div class="carousel-indicators" aria-hidden="true"></div>
+			  </div>
+
+			  <div class="bubble"></div>
+
+			  <!-- Progress (mimics petitions) -->
+			  <div class="progress-container">
+				<div class="progress-labels">
+				  <span style="color:#2196f3;">תמיכות עד כה</span>
+				  <span class="idea-progress-text" style="color:#ff9800;">0%</span>
+				</div>
+				<div class="progress-bar">
+				  <div class="progress-fill pro" style="width:0%"></div>
+				</div>
+			  </div>
+
+			  <!-- Actions: share + support -->
+			  <div class="vote-actions">
+				<button onclick="toggleShare(this)">🔄 שתף</button>
+				<div class="share-popup">
+				  <button onclick="shareTo('whatsapp')">🟢 וואטסאפ</button>
+				  <button onclick="shareTo('facebook')">📘 פייסבוק</button>
+				  <button onclick="shareTo('instagram')">📸 אינסטגרם</button>
+				</div>
+				<button onclick="supportIdea(this)">🤝 תמוך ברעיון</button>
+			  </div>
+
+			  <!-- Comments -->
+			  <div class="comments">
+				<div class="comments-list" aria-live="polite"></div>
+				<div class="comment-form">
+				  <input class="comment-input" type="text" placeholder="הוסף תגובה..." />
+				  <button class="comment-btn" onclick="addComment(this)">שלח</button>
+				</div>
+			  </div>
+			</div>
+		  </template>
+
+          <!-- cards.js will render idea cards here -->
+          <div id="ideas-list"></div>
+        </div>
+
+		<!-- ADD PETITION: form section (shown when user chooses + → עצומה) -->
+		<div id="add-petition" class="section" aria-hidden="true">
+		  <h2>צור עצומה חדשה</h2>
+
+		  <div class="petition-card">
+			<form id="add-petition-form" class="add-petition-form" onsubmit="submitAddPetition(event)">
+			  <!-- Title -->
+			  <label for="new-petition-title" class="sr-only">נושא העצומה</label>
+			  <div style="margin-bottom:10px;">
+				<input id="new-petition-title" name="title" type="text" placeholder="כותרת העצומה (נדרשת)" required maxlength="15"
+					   style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:1rem;" />
+			  </div>
+
+			  <!-- Images: add images one-by-one; each image has its own petition-style description -->
+			  <label class="sr-only">תמונות</label>
+			  <div style="margin-bottom:10px;">
+				<!-- images-list: each appended item will contain the thumbnail + a description textarea (petition style) -->
+				<div id="images-list" style="margin-top:8px;display:flex;flex-direction:column;gap:12px;"></div>
+
+				<!-- hidden file input reused for single/multiple-file add actions -->
+				<input id="new-petition-images" name="images" type="file" accept="image/*" multiple style="display:none" />
+
+				<!-- add image button (user can add images separately) -->
+				<div style="margin-top:8px;">
+				  <button type="button" id="add-image-btn" onclick="triggerAddImage()" style="padding:8px 10px;border-radius:8px;border:1px solid #008080;background:#fff;color:#008080;cursor:pointer;">
+					הוסף תמונה
+				  </button>
+				</div>
+			  </div>
+
+			  <!-- Actions -->
+			  <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+				<button type="button" onclick="cancelAddPetition()" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;">ביטול</button>
+				<button type="submit" style="padding:8px 12px;border-radius:8px;border:none;background:#008080;color:#fff;cursor:pointer;">צור עצומה</button>
+			  </div>
+			</form>
+		  </div>
+		</div>
+
+<!-- ADD REFERENDUM: new form section (mimics Add Petition flow) -->
+		<div id="add-referendum" class="section" aria-hidden="true">
+		  <h2>צור משאל חדש</h2>
+
+		  <div class="petition-card">
+			<form id="add-referendum-form" class="add-referendum-form" onsubmit="submitAddReferendum(event)">
+			  <!-- Title -->
+			  <label for="new-referendum-title" class="sr-only">כותרת המשאל</label>
+			  <div style="margin-bottom:10px;">
+				<input id="new-referendum-title" name="title" type="text" placeholder="כותרת המשאל (נדרשת)" required maxlength="15"
+					   style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:1rem;" />
+			  </div>
+
+			  <!-- Images: same UX as petitions (thumbnail + per-image description) -->
+			  <label class="sr-only">תמונות</label>
+			  <div style="margin-bottom:10px;">
+				<!-- reimages-list: appended image-wrapper entries (thumbnail + description + remove) -->
+				<div id="reimages-list" style="margin-top:8px;display:flex;flex-direction:column;gap:12px;"></div>
+
+				<!-- hidden file input for referendum images -->
+				<input id="new-referendum-images" name="images" type="file" accept="image/*" multiple style="display:none" />
+
+				<!-- add image button (same style as petition) -->
+				<div style="margin-top:8px;">
+				  <button type="button" id="add-referendum-image-btn" onclick="triggerAddRefImage()" style="padding:8px 10px;border-radius:8px;border:1px solid #008080;background:#fff;color:#008080;cursor:pointer;">
+					הוסף תמונה
+				  </button>
+				</div>
+			  </div>
+
+			  <!-- Actions -->
+			  <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+				<button type="button" onclick="cancelAddReferendum()" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;">ביטול</button>
+				<button type="submit" style="padding:8px 12px;border-radius:8px;border:none;background:#008080;color:#fff;cursor:pointer;">צור משאל</button>
+			  </div>
+			</form>
+		  </div>
+		</div>
+
+		<!-- ADD SURVEY: new form section (mimics Add Petition/Referendum flow) -->
+		<div id="add-survey" class="section" aria-hidden="true">
+		  <h2>צור סקר חדש</h2>
+
+		  <div class="petition-card">
+			<form id="add-survey-form" class="add-survey-form" onsubmit="submitAddSurvey(event)">
+			  <!-- Title -->
+			  <label for="new-survey-title" class="sr-only">כותרת הסקר</label>
+			  <div style="margin-bottom:10px;">
+				<input id="new-survey-title" name="title" type="text" placeholder="כותרת הסקר (נדרשת)" required maxlength="15"
+					   style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:1rem;" />
+			  </div>
+
+				<!-- Options: start with three option inputs; JS allows add/remove (min 3, max 6; max 15 chars each) -->
+				<label class="sr-only">אפשרויות</label>
+				<div style="margin-bottom:10px;">
+				  <div id="survey-options-list" style="display:flex;flex-direction:column;gap:8px;">
+					<div style="display:flex;gap:8px;align-items:center;">
+					  <input class="option-input" type="text" placeholder="אפשרות 1 (נדרשת)" required maxlength="15"
+							 style="flex:1;padding:8px;border-radius:6px;border:1px solid #ddd;" />
+					  <button type="button" class="remove-option-btn" onclick="removeSurveyOption(this)" title="הסר אפשרות" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">－</button>
+					  <button type="button" class="add-option-btn" onclick="addSurveyOption(this)" title="הוסף אפשרות" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;display:none;">＋</button>
+					</div>
+					<div style="display:flex;gap:8px;align-items:center;">
+					  <input class="option-input" type="text" placeholder="אפשרות 2 (נדרשת)" required maxlength="15"
+							 style="flex:1;padding:8px;border-radius:6px;border:1px solid #ddd;" />
+					  <button type="button" class="remove-option-btn" onclick="removeSurveyOption(this)" title="הסר אפשרות" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">－</button>
+					  <button type="button" class="add-option-btn" onclick="addSurveyOption(this)" title="הוסף אפשרות" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;display:none;">＋</button>
+					</div>
+					<div style="display:flex;gap:8px;align-items:center;">
+					  <input class="option-input" type="text" placeholder="אפשרות 3 (נדרשת)" required maxlength="15"
+							 style="flex:1;padding:8px;border-radius:6px;border:1px solid #ddd;" />
+					  <button type="button" class="remove-option-btn" onclick="removeSurveyOption(this)" title="הסר אפשרות" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;">－</button>
+					  <button type="button" class="add-option-btn" onclick="addSurveyOption(this)" title="הוסף אפשרות" style="padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer;display:inline-block;">＋</button>
+					</div>
+				  </div>
+				</div>
+
+			  <!-- Images: same UX as petitions/referendums (thumbnail + per-image description) -->
+			  <label class="sr-only">תמונות</label>
+			  <div style="margin-bottom:10px;">
+				<!-- simages-list: appended image-wrapper entries -->
+				<div id="simages-list" style="margin-top:8px;display:flex;flex-direction:column;gap:12px;"></div>
+
+				<!-- hidden file input for survey images -->
+				<input id="new-survey-images" name="images" type="file" accept="image/*" multiple style="display:none" />
+
+				<!-- add image button -->
+				<div style="margin-top:8px;">
+				  <button type="button" id="add-survey-image-btn" onclick="triggerAddSurveyImage()" style="padding:8px 10px;border-radius:8px;border:1px solid #008080;background:#fff;color:#008080;cursor:pointer;">
+					הוסף תמונה
+				  </button>
+				</div>
+			  </div>
+
+			  <!-- Actions -->
+			  <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+				<button type="button" onclick="cancelAddSurvey()" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;">ביטול</button>
+				<button type="submit" style="padding:8px 12px;border-radius:8px;border:none;background:#008080;color:#fff;cursor:pointer;">צור סקר</button>
+			  </div>
+			</form>
+		  </div>
+		</div>
+
+		<!-- ADD IDEA: new form section (mimics Add Petition flow) -->
+		<div id="add-idea" class="section" aria-hidden="true">
+		  <h2>צור רעיון חדש</h2>
+
+		  <div class="petition-card">
+			<form id="add-idea-form" class="add-idea-form" onsubmit="submitAddIdea(event)">
+			  <!-- Title -->
+			  <label for="new-idea-title" class="sr-only">כותרת הרעיון</label>
+			  <div style="margin-bottom:10px;">
+				<input id="new-idea-title" name="title" type="text" placeholder="כותרת הרעיון (נדרשת)" required maxlength="15"
+					   style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-size:1rem;" />
+			  </div>
+
+			  <!-- Images: add images one-by-one; each image has its own petition-style description -->
+			  <label class="sr-only">תמונות</label>
+			  <div style="margin-bottom:10px;">
+				<!-- ideaimages-list: each appended item will contain the thumbnail + a description textarea (petition style) -->
+				<div id="ideaimages-list" style="margin-top:8px;display:flex;flex-direction:column;gap:12px;"></div>
+
+				<!-- hidden file input reused for single/multiple-file add actions -->
+				<input id="new-idea-images" name="images" type="file" accept="image/*" multiple style="display:none" />
+
+				<!-- add image button (user can add images separately) -->
+				<div style="margin-top:8px;">
+				  <button type="button" id="add-idea-image-btn" onclick="triggerAddIdeaImage()" style="padding:8px 10px;border-radius:8px;border:1px solid #008080;background:#fff;color:#008080;cursor:pointer;">
+					הוסף תמונה
+				  </button>
+				</div>
+			  </div>
+
+			  <!-- Actions -->
+			  <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end;">
+				<button type="button" onclick="cancelAddIdea()" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer;">ביטול</button>
+				<button type="submit" style="padding:8px 12px;border-radius:8px;border:none;background:#008080;color:#fff;cursor:pointer;">צור רעיון</button>
+			  </div>
+			</form>
+		  </div>
+		</div>
+
+      <!-- Profile -->
+      <div id="profile" class="section">
+        <h2>הפרופיל שלי</h2>
+        <div class="petition-card">
+          <div class="petition-title">פרטי משתמש</div>
+          <div class="bubble">
+            כאן יוצגו פרטי הפרופיל שלך (שם, אימייל, תמונה וכו').
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div id="settings" class="section">
+        <h2>הגדרות</h2>
+        <div class="petition-card">
+          <div class="petition-title">העדפות חשבון</div>
+          <div class="bubble">
+            כאן ניתן לשנות שפה, התראות, מצב כהה/בהיר ועוד.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mgkv64akw4wju_main.js"></script>
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mge4vrq16q351_cards.js"></script>
+</body>
+</html>

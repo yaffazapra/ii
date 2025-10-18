@@ -1,0 +1,555 @@
+/* basic helpers */
+body { margin: 0; padding: 20px; font-family: system-ui, sans-serif; line-height: 1.5; color: #333; }
+img { max-width: 100%; height: auto; }
+a { color: #0066cc; }
+h1,h2,h3,h4,h5,h6 { margin-top: 0; }
+p { margin: 0 0 1em; }
+
+/* layout */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f8ff;
+  color: #003366;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+#app {
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* --- Navbar --- */
+.navbar {
+  background: #008080;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  position: relative;
+  /* force left-to-right layout inside navbar regardless of page dir */
+  direction: ltr;
+}
+
+/* ensure + (add-wrap) is placed before the title visually; include display/position here to avoid duplicate rules */
+.add-wrap {
+  order: 1;
+  position: relative;
+  display: inline-block;
+  margin: 0 6px;
+}
+
+/* Title sits in the center and takes remaining space (keep Hebrew text direction inside it) */
+.navbar h1 {
+  order: 2;
+  flex: 1;
+  font-size: 1rem;
+  text-align: center;
+  margin: 0 8px;
+  direction: rtl; /* keep Hebrew title rendering correctly */
+}
+
+/* Hamburger goes to the far right */
+.hamburger {
+  order: 3;
+  margin-left: auto; /* push hamburger to the far right */
+  font-size: 1.5rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: white;
+}
+
+/* match navbar button look */
+.add-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  line-height: 1;
+}
+
+.add-popup {
+  display: none;
+  position: absolute;
+  top: 48px;        /* appears below navbar */
+  left: 0px;        /* anchor to left edge of the .add-wrap so popup aligns under the + button */
+  transform-origin: top left;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  z-index: 1100;
+  min-width: 160px;
+  text-align: right;
+}
+.add-popup button {
+  width: 100%;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+  padding: 8px 6px;
+  border-radius: 6px;
+}
+.add-popup button:hover { background: rgba(0,0,0,0.04); }
+
+/* --- Sidebar --- */
+.sidebar {
+  position: fixed;
+  top: 0; right: -250px;
+  width: 250px;
+  height: 100%;
+  background: #002244;
+  color: white;
+  padding: 20px;
+  transition: right 0.3s ease;
+  z-index: 1000;
+}
+.sidebar.active { right: 0; }
+.sidebar h2 { margin-bottom: 20px; }
+.sidebar a { display: block; color: white; text-decoration: none; margin: 12px 0; }
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  float: left;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+/* --- Toggle bar --- */
+.toggle-bar {
+  display: flex;
+  justify-content: space-around;
+  background: #e6f0ff;
+  padding: 10px 0;
+}
+.toggle-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  flex: 1;
+}
+.toggle-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #008080;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.8rem;
+  color: #008080;
+  transition: all 0.3s ease;
+}
+.toggle-item.active .toggle-circle {
+  background: #4caf50;
+  color: white;
+  border-color: #4caf50;
+}
+.toggle-label { margin-top: 6px; font-size: 0.8rem; }
+
+/* --- Content area --- */
+.content { flex: 1; overflow-y: auto; padding: 15px; background: #fafafa; }
+.section { display: none; }
+.section.active { display: block; }
+.section h2 { margin-bottom: 10px; font-size: 1.1rem; color: #003366; }
+
+/* --- Petition card --- */
+.petition-card, .referendum-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.petition-title { font-weight: bold; margin-bottom: 5px; }
+.petition-date { font-size: 0.8rem; color: gray; margin-bottom: 10px; }
+.bubble {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #111;
+  margin-top: 12px; /* spacing below carousel */
+  overflow: visible; /* allow toggle / fade to show */
+}
+
+/* triangular tail */
+.bubble:before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #f9f9f9 transparent;
+}
+
+/* --- NEW: clamp and toggle for bubble text --- */
+/* inner content element that will be line-clamped */
+/* Bubble base */
+.bubble {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: #111;
+  margin-top: 12px;
+  overflow: hidden; /* hide overflow when clamped */
+}
+
+/* triangular tail (unchanged) */
+.bubble:before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #f9f9f9 transparent;
+}
+
+/* Inner content — general */
+.bubble .bubble-content {
+  transition: max-height 0.22s ease, padding-left 0.22s ease;
+  direction: rtl;
+  padding-left: 12px; /* same padding for collapsed & expanded */
+  box-sizing: border-box;
+}
+
+/* When clamped: keep the same padding but apply line-clamp */
+.bubble.clamped .bubble-content,
+.bubble .bubble-content.clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding-left: 12px; /* same as non-clamped — no odd shifting */
+}
+
+/* Fade overlay: only the bottom portion (about half of the 4th line).
+   Start the fade at the same inset as content (12px) so it aligns with text. */
+.bubble .bubble-fade {
+  display: none;
+  position: absolute;
+  left: 12px;    /* align with content start (same as padding-left) */
+  right: 12px;
+  bottom: 10px;  /* slightly above the card inner padding */
+  height: 0.8em; /* roughly half-line fade, tweak if needed */
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(249,249,249,0), rgba(249,249,249,1));
+  z-index: 2;
+}
+
+/* show fade only when clamped */
+.bubble.clamped .bubble-fade {
+  display: block;
+}
+
+/* Toggle button styles — visible text comes from JS-set textContent */
+.bubble .bubble-toggle {
+  position: absolute;
+  left: 12px;
+  bottom: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.70rem;
+  line-height: 1;
+  z-index: 3;
+  color: #00796b;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: "Segoe UI", "Arial", "Tahoma", "Noto Sans Hebrew", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+
+/* When expanded remove left gutter so text uses full width */
+.bubble.expanded .bubble-content,
+.bubble:not(.clamped) .bubble-content {
+  padding-left: 12px;
+}
+
+/* keep slide-bubble subtle but consistent (if used elsewhere) */
+.slide-bubble {
+  margin-top: 10px;
+  box-shadow: none;
+}
+.slide-bubble:before {
+  top: -8px;
+  right: 16px;
+  border-color: transparent transparent #f9f9f9 transparent;
+}
+
+/* small screens */
+@media (max-width: 480px) {
+  .bubble { padding: 8px; font-size: 0.85rem; margin-top: 10px; }
+  .bubble:before { right: 16px; top: -9px; }
+}
+
+/* --- Carousel for petitions (force LTR like index.html) --- */
+.carousel-container {
+  overflow: hidden;
+  position: relative;
+  margin: 10px 0 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  /* Ensure the carousel inner flow is left-to-right even when page is RTL */
+  direction: ltr;
+  unicode-bidi: isolate; /* keep this component isolated from page bidi effects */
+}
+
+.carousel-track {
+  display: flex;
+  flex-direction: row;       /* explicit LTR row flow */
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
+  direction: ltr;            /* ensure transform/ordering behave LTR */
+}
+
+.carousel-slide {
+  min-width: 100%;
+  max-width: 100%;
+  padding: 8px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* ensure slides don't flip in RTL context */
+  direction: ltr;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+/* indicator dots */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+  gap: 8px;
+  padding-bottom: 6px;
+}
+.dot {
+  height: 10px;
+  width: 10px;
+  background-color: #ddd;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+.dot.active { background-color: #003366; }
+
+/* small screens tweak */
+@media (max-width: 480px) {
+  .carousel-slide img { max-height: 180px; }
+}
+
+/* --- Referendum elements --- */
+.progress-container { margin-top: 15px; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; }
+.progress-bar { height: 8px; border-radius: 4px; margin-bottom: 10px; background: #ddd; position: relative; }
+.progress-fill { height: 100%; border-radius: 4px; width: 0%; }
+.progress-fill.pro { background: #2196f3; }
+.progress-fill.con { background: #ff9800; }
+
+/* Survey option colors (five distinct option fills) - original colors kept */
+.progress-fill.opt1 { background: #2196f3; }  /* blue */
+.progress-fill.opt2 { background: #4caf50; }  /* green */
+.progress-fill.opt3 { background: #ff9800; }  /* orange */
+.progress-fill.opt4 { background: #bdbdbd; }  /* grey */
+.progress-fill.opt5 { background: #bdbdbd; }  /* grey */
+
+/* Slight spacing tweak for the survey progress block (optional) */
+.survey-progress .progress-labels { margin-bottom: 4px; }
+.survey-progress .progress-bar { margin-bottom: 8px; }
+
+/* --- NEW: Survey dynamic options styling (clickable labels, collapsed view etc.) --- */
+/* make the survey progress container a positioning context */
+.survey-progress { position: relative; }
+
+/* options list: tighter vertical spacing and slightly smaller text to match referendum look */
+.options-list {
+  display:flex;
+  flex-direction:column;
+  gap:0px;            /* reduced gap between rows */
+  margin-top:6px;
+  font-size: 0.82rem; /* slightly smaller, closer to referendum pro label */
+  line-height: 1.2;
+}
+
+/* each option row: stacked label-row + bar-row */
+.option-row {
+  display:flex;
+  flex-direction:column;
+  gap:0px;            /* less gap between the label row and bar row */
+  position: relative; /* needed for the collapsed 3rd-row fade pseudo-element */
+  padding: 2px 0;
+}
+
+/* the label row that holds label (left) and percent (right) */
+.option-row .progress-labels {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:0.8rem;   /* match referendum label size */
+  letter-spacing: 0;  /* tighten slightly */
+}
+
+/* clickable label styling */
+.option-label {
+  cursor:pointer;
+  user-select:none;
+  padding:1px 6px;
+  border-radius:6px;
+  transition: background .12s, color .12s;
+  font-weight:600;
+}
+.option-label:hover { background: rgba(0,0,0,0.03); }
+
+/* percent text box — smaller, same color will be set by JS */
+.option-percent {
+  min-width:40px;
+  text-align:left;
+  font-weight:700;
+  font-size:0.8rem;
+}
+
+/* fill (bar) default style - grey for non-top3 */
+.option-fill { background: #bdbdbd; transition: width .28s ease, background .2s ease; }
+
+/* collapsed: hide everything after the first 3 rows (JS renders in sorted order) */
+.survey-progress.collapsed .option-row:nth-child(n+4) { display:none; }
+
+/* collapsed: third row is visible but will receive a fade overlay (half-faded look) */
+/* ensure the row clips the overlay and the overlay sits above content */
+.option-row { overflow: hidden; } /* ensures pseudo-element is visible and clipped to the row */
+
+.survey-progress.collapsed .option-row:nth-child(3)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* use percentage height so the fade matches different font sizes better */
+  height: 190%;            /* roughly the lower half of the third row */
+  pointer-events: none;
+  /* fade to the survey-card background (card is white) — use same base as .petition-card */
+  background: linear-gradient(to bottom,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.45) 40%,
+      rgba(255,255,255,0.9) 75%,
+      rgba(255,255,255,1) 100%);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  z-index: 8;              /* higher so it covers text and bar */
+  transition: opacity .18s ease;
+  opacity: 1;
+}
+
+/* Place the options-toggle UNDER the options-list (bottom-left visual position) */
+.survey-progress .options-toggle {
+  position: static;
+  display: block;        /* make it block-level so margins control placement */
+  margin-top: 0px;       /* small gap between the options-list and the button */
+  margin-right: auto;    /* in RTL pages, margin-right:auto pushes the element to visual LEFT */
+  margin-left: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight:700;
+  color: #00796b;
+  padding: 1px 8px;
+  border-radius: 8px;
+
+  /* remove direction forcing — not needed when placing with margin-right:auto */
+  direction: initial;
+  unicode-bidi: isolate;
+}
+
+/* responsive tweaks */
+@media (max-width:420px) {
+  .option-percent { min-width:34px; font-size:0.8rem; }
+  .option-label { font-size:0.8rem; }
+  .survey-progress .options-toggle { padding: 1px 8px; }
+}
+
+.vote-actions {
+  display: flex; justify-content: space-around; margin-top: 15px;
+  border-top: 1px solid #eee; padding-top: 10px; position: relative;
+}
+.vote-actions button { background: none; border: none; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+/* --- Share popup --- */
+.share-popup {
+  display: none;
+  position: absolute;
+  bottom: 40px;
+  right: 10px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+  min-width: 180px;
+}
+.share-popup a, .share-popup button {
+  width: 100%; text-align: right; display: flex; align-items: center; gap: 8px;
+  background: none; border: none; cursor: pointer; font-size: 0.95rem; color: #333; text-decoration: none; padding: 6px 4px;
+}
+
+/* responsive */
+@media (max-width: 480px) {
+  .toggle-circle { width: 48px; height: 48px; font-size: 1.4rem; }
+}
+
+/* --- Comments styles (cards) --- */
+.comments { margin-top: 12px; border-top: 1px solid #eee; padding-top: 10px; }
+.comments-list { max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.comment { background: #fafafa; border-radius: 8px; padding: 8px; font-size: 0.9rem; color: #222; text-align: right; }
+.comment .comment-text { direction: rtl; }
+.comment-form { display: flex; gap: 8px; }
+.comment-input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
+.comment-btn { padding: 8px 10px; border-radius: 8px; background: #008080; color: white; border: none; cursor: pointer; }
+
