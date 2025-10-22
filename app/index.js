@@ -7,6 +7,28 @@
   let sentToPhone = null;
   let listenersAttached = false; // Flag to prevent duplicate listeners
 
+  // Check WhatsApp connection status
+  async function checkWhatsAppConnection() {
+    const config = window.APP_CONFIG || {};
+    const statusUrl = config.WHATSAPP_STATUS_URL || 'https://whatsapp-bridge-o5uu.onrender.com/api/status';
+
+    try {
+      const response = await fetch(statusUrl, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.ok) {
+        const status = await response.json();
+        return status;
+      }
+    } catch (error) {
+      console.error('Failed to check WhatsApp status:', error);
+    }
+
+    return { connected: false, needs_qr_scan: true, authenticated: false };
+  }
+
   function init() {
     try { localStorage.setItem('savedUrl', window.location.href); } catch (e) { /* ignore */ }
     console.log('index.js initialized');
@@ -34,6 +56,24 @@
         return;
       }
 
+      // Show loading state
+      const originalText = nextBtn ? nextBtn.textContent : '';
+      if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.textContent = config.MESSAGES?.CHECKING_CONNECTION || 'בודק חיבור...';
+      }
+
+      // Check WhatsApp connection status first
+      const status = await checkWhatsAppConnection();
+      if (!status.connected || status.needs_qr_scan) {
+        if (nextBtn) {
+          nextBtn.disabled = false;
+          nextBtn.textContent = originalText;
+        }
+        alert(config.MESSAGES?.WHATSAPP_DISCONNECTED || '⚠️ WhatsApp service needs reconnection. Please contact admin to scan QR code.');
+        return;
+      }
+
       // Send real WhatsApp verification code
       const phone = phoneEl.value.trim();
       const internationalPhone = '972' + phone.substring(1);
@@ -44,10 +84,8 @@
 
       const message = `Your verification code: ${generatedCode}\n\nקוד האימות שלך: ${generatedCode}`;
 
-      // Show loading state
-      const originalText = nextBtn ? nextBtn.textContent : '';
+      // Update loading state
       if (nextBtn) {
-        nextBtn.disabled = true;
         nextBtn.textContent = config.MESSAGES?.SENDING || 'שולח קוד...';
       }
 
@@ -227,24 +265,43 @@
     }
 
     // Verify the code entered by user
-    function verifyEnteredCode() {
+    async function verifyEnteredCode() {
       const inputs = document.querySelectorAll('.digit');
       const enteredCode = Array.from(inputs).map(inp => inp.value).join('');
       const config = window.APP_CONFIG || {};
 
       if (enteredCode.length === 4) {
         if (enteredCode === generatedCode) {
-          // Code is correct - show green and auto-proceed
+          // Code is correct - show green
           inputs.forEach(input => {
             input.classList.add('fade-in');
             input.style.borderColor = '#25D366';
             input.disabled = true;
           });
 
-          // Automatically proceed to next stage after brief delay
-          setTimeout(() => {
-            navigateTo('#final');
-          }, config.AUTO_PROCEED_DELAY || 500);
+          // Check if user exists in database
+          try {
+            const existingUser = await window.DB.getUserByPhone(sentToPhone);
+
+            if (existingUser) {
+              // User exists - save phone to localStorage and proceed to app
+              localStorage.setItem('userPhone', sentToPhone);
+              setTimeout(() => {
+                navigateTo('#final');
+              }, config.AUTO_PROCEED_DELAY || 500);
+            } else {
+              // New user - go to registration screen
+              setTimeout(() => {
+                navigateTo('#register');
+              }, config.AUTO_PROCEED_DELAY || 500);
+            }
+          } catch (error) {
+            console.error('Error checking user:', error);
+            // On error, assume new user and proceed to registration
+            setTimeout(() => {
+              navigateTo('#register');
+            }, config.AUTO_PROCEED_DELAY || 500);
+          }
         } else {
           // Code is incorrect
           inputs.forEach(input => {
@@ -259,6 +316,56 @@
         }
       }
     }
+
+    // Register new user
+    async function registerUser() {
+      const nameInput = document.getElementById('nameInput');
+      const registerBtn = document.querySelector('#register button[onclick="registerUser()"]');
+      const config = window.APP_CONFIG || {};
+
+      if (!nameInput) {
+        alert('Name input missing on page.');
+        return;
+      }
+
+      const name = nameInput.value.trim();
+
+      // Validate name (2-15 characters)
+      if (name.length < 2 || name.length > 15) {
+        alert('נא להזין שם בין 2 ל-15 תווים.\nPlease enter a name between 2-15 characters.');
+        return;
+      }
+
+      // Show loading state
+      const originalText = registerBtn ? registerBtn.textContent : '';
+      if (registerBtn) {
+        registerBtn.disabled = true;
+        registerBtn.textContent = config.MESSAGES?.LOADING || 'טוען...';
+      }
+
+      try {
+        // Create user in database
+        await window.DB.createUser(sentToPhone, name);
+
+        // Save phone to localStorage
+        localStorage.setItem('userPhone', sentToPhone);
+
+        // Proceed to app
+        setTimeout(() => {
+          navigateTo('#final');
+        }, config.AUTO_PROCEED_DELAY || 500);
+      } catch (error) {
+        console.error('Error registering user:', error);
+        alert('שגיאה ברישום. אנא נסה שוב.\nError during registration. Please try again.');
+      } finally {
+        // Restore button state
+        if (registerBtn) {
+          registerBtn.disabled = false;
+          registerBtn.textContent = originalText;
+        }
+      }
+    }
+    window.registerUser = registerUser;
 
     updateCarousel();
   } // end init()

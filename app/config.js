@@ -4,11 +4,9 @@
 
   // API Configuration
   window.APP_CONFIG = {
-    // WhatsApp API endpoint - Render deployment (permanent)
+    // WhatsApp API endpoint - Update this URL after deploying to Render
     WHATSAPP_API_URL: 'https://whatsapp-bridge-o5uu.onrender.com/api/send',
-
-    // Alternative: Use relative URL if API is on same domain
-    // WHATSAPP_API_URL: '/api/send',
+    WHATSAPP_STATUS_URL: 'https://whatsapp-bridge-o5uu.onrender.com/api/status',
 
     // Timing configurations (in milliseconds)
     AUTO_PROCEED_DELAY: 500,
@@ -24,7 +22,9 @@
       SEND_ERROR: 'Error sending verification code. Please try again.',
       CODE_INCORRECT: 'קוד שגוי. אנא נסה שוב.\nIncorrect code. Please try again.',
       SENDING: 'שולח קוד...',
-      LOADING: 'טוען...'
+      LOADING: 'טוען...',
+      WHATSAPP_DISCONNECTED: '⚠️ WhatsApp service needs reconnection. Please contact admin to scan QR code.',
+      CHECKING_CONNECTION: 'בודק חיבור...'
     }
   };
 })();

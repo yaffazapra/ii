@@ -35,6 +35,11 @@
       const card = clone.querySelector('.petition-card') || clone.firstElementChild;
       if (!card) return;
 
+      // Add postId as data attribute for engagement tracking
+      if (item.postId) {
+        card.dataset.postId = item.postId;
+      }
+
       // Title & date
       const titleEl = card.querySelector('.petition-title');
       if (titleEl) titleEl.textContent = item.title || '';
@@ -173,6 +178,11 @@
       const clone = tpl.content.cloneNode(true);
       const card = clone.querySelector('.referendum-card') || clone.firstElementChild;
       if (!card) return;
+
+      // Add postId as data attribute for engagement tracking
+      if (item.postId) {
+        card.dataset.postId = item.postId;
+      }
 
       // title & date
       const titleEl = card.querySelector('.petition-title');
@@ -322,6 +332,11 @@
       const card = clone.querySelector('.survey-card') || clone.firstElementChild;
       if (!card) return;
 
+      // Add postId as data attribute for engagement tracking
+      if (item.postId) {
+        card.dataset.postId = item.postId;
+      }
+
       // title & date
       const titleEl = card.querySelector('.petition-title');
       if (titleEl) titleEl.textContent = item.title || '';
@@ -470,6 +485,11 @@
       const clone = tpl.content.cloneNode(true);
       const card = clone.querySelector('.idea-card') || clone.querySelector('.petition-card') || clone.firstElementChild;
       if (!card) return;
+
+      // Add postId as data attribute for engagement tracking
+      if (item.postId) {
+        card.dataset.postId = item.postId;
+      }
 
       // title & date
       const titleEl = card.querySelector('.petition-title');

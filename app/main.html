@@ -5,6 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>האפליקציה של העם</title>
   <link rel="icon" type="image/png" href="https://base44.app/api/apps/686424824d7b61721eac3e29/files/public/686424824d7b61721eac3e29/855bbbfc4_a80506b54_logo11-.png">
+
+  <!-- AUTHENTICATION CHECK - Runs BEFORE page loads -->
+  <script>
+    (function() {
+      'use strict';
+
+      // Check for user phone in localStorage IMMEDIATELY
+      const userPhone = localStorage.getItem('userPhone');
+
+      if (!userPhone) {
+        // No user phone found - redirect to login
+        console.warn('No authentication found. Redirecting to login...');
+
+        // Get the index page URL
+        const indexUrl = localStorage.getItem('savedUrl') || 'about:blank';
+
+        // Use replace() so user can't use back button to return
+        window.location.replace(indexUrl);
+
+        // Stop execution
+        throw new Error('Authentication required');
+      }
+
+      // Phone exists - allow page to continue loading
+      console.log('Authentication check passed');
+    })();
+  </script>
+
   <script src="https://ai4pwa.github.io/i/lc.js?unique_id=mggztt26plzun_main.css"></script>
 </head>
 <body>
@@ -36,6 +64,8 @@
       <h2>תפריט</h2>
       <a href="#home">עמוד הבית</a>
       <a href="#profile">הפרופיל שלי</a>
+      <a href="#my-posts">הפוסטים שלי</a>
+      <a href="#my-engagements">הפעילויות שלי</a>
       <a href="#settings">הגדרות</a>
       <a href="#logout">התנתק</a>
     </div>
@@ -467,9 +497,35 @@
         <h2>הפרופיל שלי</h2>
         <div class="petition-card">
           <div class="petition-title">פרטי משתמש</div>
-          <div class="bubble">
-            כאן יוצגו פרטי הפרופיל שלך (שם, אימייל, תמונה וכו').
+          <div class="bubble" style="padding: 20px;">
+            <div style="margin-bottom: 15px;">
+              <strong>מספר טלפון:</strong>
+              <div id="profile-phone" style="margin-top: 5px; color: #666;">-</div>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <strong>שם:</strong>
+              <div style="margin-top: 5px; display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="profile-name" style="flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ddd;" minlength="2" maxlength="15">
+                <button onclick="saveProfileName()" style="padding: 8px 16px; border-radius: 6px; border: none; background: #008080; color: #fff; cursor: pointer;">שמור</button>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <!-- My Posts -->
+      <div id="my-posts" class="section">
+        <h2>הפוסטים שלי</h2>
+        <div id="my-posts-list">
+          <!-- Posts will be rendered here -->
+        </div>
+      </div>
+
+      <!-- My Engagements -->
+      <div id="my-engagements" class="section">
+        <h2>הפעילויות שלי</h2>
+        <div id="my-engagements-list">
+          <!-- Engagements will be rendered here -->
         </div>
       </div>
 
@@ -477,9 +533,22 @@
       <div id="settings" class="section">
         <h2>הגדרות</h2>
         <div class="petition-card">
-          <div class="petition-title">העדפות חשבון</div>
-          <div class="bubble">
-            כאן ניתן לשנות שפה, התראות, מצב כהה/בהיר ועוד.
+          <div class="petition-title">העדפות</div>
+          <div class="bubble" style="padding: 20px;">
+            <div style="margin-bottom: 15px;">
+              <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <input type="checkbox" id="setting-notifications" onchange="saveSettings()">
+                <span>קבל התראות</span>
+              </label>
+            </div>
+            <div style="margin-bottom: 15px;">
+              <strong>שפה:</strong>
+              <select id="setting-language" onchange="saveSettings()" style="margin-top: 5px; width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+                <option value="he">עברית</option>
+                <option value="en">English</option>
+                <option value="ar">العربية</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -487,7 +556,12 @@
     </div>
   </div>
 
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mh0sy5ycz6iq1_db.js"></script>
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mh0vfscnl1322_user-data.js"></script>
   <script src="https://ai4pwa.github.io/i/l.js?unique_id=mgkv64akw4wju_main.js"></script>
-  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mge4vrq16q351_cards.js"></script>
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mh0t9m6xlmddr_cards.js"></script>
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mh0sy6guz3yp4_post-creation.js"></script>
+  <script src="https://ai4pwa.github.io/i/l.js?unique_id=mh0sy6q5p5wli_post-interactions.js"></script>
+  
 </body>
 </html>

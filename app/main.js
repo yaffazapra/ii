@@ -1862,7 +1862,7 @@
 
 	  // If hash matches an existing section, show it
 	  // NOTE: added 'add-petition' and 'add-referendum' so routeTo('#add-petition') / '#add-referendum' will show the add forms.
-	  const knownSections = ['petitions','referendums','surveys','ideas','add-petition','add-referendum','add-survey','add-idea','profile','settings'];
+	  const knownSections = ['petitions','referendums','surveys','ideas','add-petition','add-referendum','add-survey','add-idea','profile','settings','my-posts','my-engagements'];
 	  if (knownSections.includes(target)) {
 		showOnlySection(target);
 		// Only mark toggle active for the four main toggle sections

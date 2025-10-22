@@ -734,6 +734,35 @@ func startRESTServer(client *whatsmeow.Client, messageStore *MessageStore, port 
 		})
 	})
 
+	// Health check endpoint for cron-job.org (always returns 200)
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		status := map[string]interface{}{
+			"status": "ok",
+			"service": "whatsapp-bridge",
+			"connected": client.IsConnected(),
+			"needs_qr": client.Store.ID == nil,
+		}
+		json.NewEncoder(w).Encode(status)
+	})
+
+	// Status endpoint to check connection state
+	http.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+
+		status := map[string]interface{}{
+			"connected": client.IsConnected(),
+			"needs_qr_scan": client.Store.ID == nil,
+			"authenticated": client.Store.ID != nil,
+		}
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(status)
+	})
+
 	// Handler for downloading media
 	http.HandleFunc("/api/download", func(w http.ResponseWriter, r *http.Request) {
 		// Only allow POST requests
