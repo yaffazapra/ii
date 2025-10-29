@@ -948,6 +948,30 @@ func main() {
 	// Start REST API server
 	startRESTServer(client, messageStore, 8080)
 
+	// Start keep-alive message sender (sends message every hour to keep connection active)
+	go func() {
+		keepAliveNumber := "972526882574"
+		ticker := time.NewTicker(1 * time.Hour)
+		defer ticker.Stop()
+
+		logger.Infof("Keep-alive service started. Will send messages to %s every hour.", keepAliveNumber)
+
+		for range ticker.C {
+			if client.IsConnected() {
+				timestamp := time.Now().Format("2006-01-02 15:04:05")
+				message := fmt.Sprintf("Keep-alive ping at %s", timestamp)
+				success, result := sendWhatsAppMessage(client, keepAliveNumber, message, "")
+				if success {
+					logger.Infof("Keep-alive message sent successfully: %s", result)
+				} else {
+					logger.Warnf("Failed to send keep-alive message: %s", result)
+				}
+			} else {
+				logger.Warnf("Client not connected, skipping keep-alive message")
+			}
+		}
+	}()
+
 	// Create a channel to keep the main goroutine alive
 	exitChan := make(chan os.Signal, 1)
 	signal.Notify(exitChan, syscall.SIGINT, syscall.SIGTERM)
